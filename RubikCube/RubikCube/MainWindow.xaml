@@ -1,0 +1,81 @@
+﻿<Window x:Class="RubikCube.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RubikCube.ViewModel"
+        xmlns:convert="clr-namespace:RubikCube.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="650" Width="800">
+    <Window.DataContext>
+        <local:MainVM/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <convert:ArrayMultiValueConverter x:Key="arrayMultiValueConverter"/>
+        </Grid.Resources>
+        
+        <StackPanel Name="cubeFaces" Grid.Column="1" VerticalAlignment="Center" Grid.Row="1"  Grid.RowSpan="2">
+            <Button Name="top" Style="{StaticResource RedButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Name="left" Style="{StaticResource WhiteButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+                <Button Name="mid" Style="{StaticResource GreenButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+                <Button Name="right" Style="{StaticResource YellowButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+            </WrapPanel>
+            <Button Name ="bot" Style="{StaticResource OrangeButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+            <Button Name="back" Style="{StaticResource BlueButtonStyle}" Command="{Binding Path=LoadImageCommandLocal.CopyImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></Button>
+        </StackPanel>
+        <Label 
+            Margin="10,0,10,10"
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Width="auto"
+            Height="auto"
+            Background="DarkRed"
+            BorderBrush="Black"
+            BorderThickness="5"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center">
+            <ScrollViewer x:Name="scrollViewerProcessed"
+                          HorizontalScrollBarVisibility="Auto" 
+                          VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="canvasLoadImage"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="{Binding Path=LoadImageCanvasWidth}"
+                    Height="{Binding Path=LoadImageCanvasHeight}">
+                    <Image x:Name="LoadImage"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           Source="{Binding Path=LoadImage}">
+                    </Image>
+                </Canvas>
+            </ScrollViewer>
+        </Label>
+        <Button Name="loadImageButton" Grid.Column="0" Grid.Row="0" Width="100" Height="30" Content="Load an image" Command="{Binding Path=LoadImageCommandLocal.LoadColorImageCommand}">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource arrayMultiValueConverter}">
+                    <Binding ElementName="canvasLoadImage"/>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+        <Button Name="resetButton" Grid.Column="1" Grid.Row="1" Width="100" Height="30" Content="Reset cube" Margin="0,0,300,0" Command="{Binding Path=LoadImageCommandLocal.ResetCubeFaces}"
+                CommandParameter="{Binding ElementName=cubeFaces}">
+        </Button>
+        <Button Grid.Column="1" Grid.Row="3" Content="Submit" Command="{Binding Path=LoadImageCommandLocal.SubmitCommand}"
+                CommandParameter="{Binding ElementName=cubeFaces}"></Button>
+    </Grid>
+</Window>
